@@ -1,0 +1,55 @@
+#!/bin/bash
+
+source /etc/profile.d/modules.sh
+
+module add development/cmake development/boost mpi/openmpi/4.0.3 compilers/gcc/10.1.0
+
+__NODE_COUNT__=4
+__THREAD_COUNT__=8
+__TASKS_PER_NODE__=4
+__PARTITION__=""
+__TIME__="128:00:00"
+__MEM__=16G
+
+if [ "$#" -ge 1 ]; then
+    if [[ -z "${nodes}" ]]; then
+    __NODE_COUNT__=4
+    echo "Using default value of ${__NODE_COUNT__} nodes" 
+    else
+    __NODE_COUNT__="${nodes}"
+    fi
+
+    if [[ -z "${threads}" ]]; then
+    __THREAD_COUNT__=8
+    echo "Using default value of ${__THREAD_COUNT__} threads" 
+    else
+    __THREAD_COUNT__="${threads}"
+    fi
+
+    if [[ -z "${tasks}" ]]; then
+    __TASKS_PER_NODE__=4
+    echo "Using default value of ${__TASKS_PER_NODE__} tasks per node" 
+    else
+    __TASKS_PER_NODE__="${tasks}"
+    fi
+
+    if [[ -z "${partition}" ]]; then
+    __PARTITION__="tara-no-limits"
+    echo "Using default partition ${__PARTITION__}" 
+    else
+    __PARTITION__="${partition}"
+    fi
+
+    if [[ -z "${slurm_time}" ]]; then
+    __TIME__="128:00:00"
+    echo "Using default value of requesting ${__TIME__} of resources time" 
+    else
+    __TIME__="${slurm_time}"
+    fi
+
+    srun -N ${__NODE_COUNT__} --ntasks-per-node=${__TASKS_PER_NODE__} -c ${__THREAD_COUNT__} -p ${__PARTITION__} --time=${__TIME__} --mem=${__MEM__} -u \
+        ./vina-mpi-batch "$@"
+else
+    echo "Usage: nodes=<num of nodes> threads=<num of threads> partition=<slurm partition> time=<requested time> vina-srun <vina-mpi-batch> args"
+    ./vina-mpi-batch --help
+fi

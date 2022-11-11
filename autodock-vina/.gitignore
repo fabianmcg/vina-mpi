@@ -1,0 +1,27 @@
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text eol=lf
+
+# Dependencies directory.
+
+dependencies/
+
+# Visual Studio
+# https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
+
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+.vs/
+
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
